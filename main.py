@@ -246,7 +246,7 @@ def get_psi(c):
         result[i] /= math.sqrt(coefPsi)
     return result
 
-def plot(U, psi1, psi2, psi3, psi):
+def plot(U, psi, psi1, psi2, psi3):
     plt.axis([A, B, -1, W])
     plt.plot(X, U, 'g-', linewidth=5.0, label="U(x)")
     Zero = np.zeros(n, dtype=float)
@@ -337,5 +337,5 @@ print("E0 (for N = {:d} )     = {:12.8f}".format(N3, E03))
 
 #----------plot graph----------------------
 value_U = np.array([fun_U(X[i]) for i in np.arange(n)])
-plot(value_U, psi1, psi2, psi3, psi_U[0])
+plot(value_U, psi_U[0], psi1, psi2, psi3)
 
