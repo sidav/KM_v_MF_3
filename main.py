@@ -14,19 +14,18 @@ def convert_angstrom_to_atomic_units(value):
 def convert_electronvolt_to_atomic_units(value):
     return value / 27.212
 
-class Pristrelki_method:
+class Shooting_method:
     # initial data (atomic units)
     L = convert_angstrom_to_atomic_units(2.0)
     A = -L
     B = +L
-    # number of mesh node
-    n = 1001  # odd integer number
 
-    def __init__(self, fun_U, U0, ne, e2, count_e):
+    def __init__(self, fun_U, U0, ne, e2, count_e, n):
         self.U = fun_U
         self.U0 = U0
         self.ne = ne
         self.e2 = e2
+        self.n = n
 
         self.X = np.linspace(self.A, self.B, self.n)  # forward
         self.XX = np.linspace(self.B, self.A, self.n)  # backwards
@@ -101,7 +100,7 @@ class Pristrelki_method:
         f = der1 - der2
         return f
 
-    def m_bis(self, x1, x2, tol):
+    def bisection_method(self, x1, x2, tol):
         while abs(x2 - x1) > tol:
             xr = (x1 + x2) / 2.0
             if self.f_fun(e=x2) * self.f_fun(e=xr) < 0.0:
@@ -131,7 +130,7 @@ class Pristrelki_method:
                 if Log1 and Log2:
                     energy1 = ee[i - 1]
                     energy2 = ee[i]
-                    eval = self.m_bis(energy1, energy2, tol)
+                    eval = self.bisection_method(energy1, energy2, tol)
                     energy.append(eval)
                     coefPsi = self.average_value(self.Psi, self.Psi)
                     self.Psi[:] = self.Psi[:] / math.sqrt(coefPsi[0])
@@ -144,17 +143,18 @@ class Pristrelki_method:
                     if ngr == self.count_e:
                         break
         return energy, fun_psi
-#-----------------end class method pristrelki-----------------------------
+#----------------- DON'T TOUCH ANYTHING ABOVE! -----------------------------
 
 
 #------------------data initial---------------------------------------------
 V0 = convert_electronvolt_to_atomic_units(20)
 L = convert_angstrom_to_atomic_units(2.0)
-W = 5.0
+W = 4.0
 A = -L
 B = +L
-n = 1001
+n = 257
 X = np.linspace(A, B, n)  # forward
+
 count_phi = 100
 N1 = 5
 N2 = 8
@@ -165,11 +165,11 @@ Temp = []
 
 def fun_U(x): #potential function
     if (abs(x) < L):
-        return V0 * erf(x)
+        return float((-1 + (x + L) / (2 * L)) if abs(x) < L else W)
     else:
         return W
 
-def srednee(psi_m, oper_value, psi_n):
+def mean(psi_m, oper_value, psi_n):
     value = []
     if oper_value is None:
         for ind in range(len(psi_m)):
@@ -229,7 +229,7 @@ def get_matrix_H(N):
             new_value = 0
             if i == j:
                 new_value += math.pow(math.pi * (i + 1) / L, 2) / 8
-            new_value += srednee(phi_values[i], value_U, phi_values[j])
+            new_value += mean(phi_values[i], value_U, phi_values[j])
             matrix[i][j] = new_value
     return matrix
 
@@ -241,7 +241,7 @@ def get_psi(c):
             value += c[j] * phi_values[j][i]
         result.append(value)
 
-    coefPsi = srednee(result, None, result)
+    coefPsi = mean(result, None, result)
     for i in range(len(result)):
         result[i] /= math.sqrt(coefPsi)
     return result
@@ -325,7 +325,7 @@ if coef_c[0] < 0:
 psi3 = get_psi(coef_c)
 #--------------end third-------------------
 
-method_pristrelki_U = Pristrelki_method(fun_U, U0=-4, ne=101, e2=15, count_e=1)
+method_pristrelki_U = Shooting_method(fun_U, U0=-4, ne=101, e2=15, count_e=1, n=n)
 energy_U, psi_U = method_pristrelki_U.get_energy()
 
 #---------write results--------------------
