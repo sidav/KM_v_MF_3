@@ -251,23 +251,20 @@ def plot(U, psi1, psi2, psi3, psi):
     plt.plot(X, U, 'g-', linewidth=5.0, label="U(x)")
     Zero = np.zeros(n, dtype=float)
     plt.plot(X, Zero, 'k-', linewidth=1.0)  # abscissa axis
-    plt.plot(X, psi, 'b-', linewidth=8.0, label="'$\psi$'")
-    plt.plot(X, psi1, 'y-', linewidth=5.0, label="'$\psi$1'")
-    plt.plot(X, psi2, 'm-', linewidth=2.5, label="'$\psi$2'")
-    plt.plot(X, psi3, 'g-', linewidth=0.5, label="'$\psi$3'")
+    plt.plot(X, psi, color=(0.9, 0.0, 0.0), linewidth=10.0, label="$\psi$")
+    plt.plot(X, psi1, color=(0.0, 0.9, 0.0), linewidth=7.0, label="$\psi$_1")
+    plt.plot(X, psi2, color=(0.0, 0.0, 0.9), linewidth=3.5, label="$\psi$_2")
+    plt.plot(X, psi3, color=(0.5, 0.5, 0.5), linewidth=1.0, label="$\psi$_3")
     plt.xlabel("X", fontsize=18, color="k")
-    plt.ylabel("U(x), Psi(x)", fontsize=18, color="k")
+    plt.ylabel("U(x), $\psi$(x)", fontsize=18, color="k")
     plt.grid(True)
     plt.legend(fontsize=16, shadow=True, fancybox=True, loc='upper right')
     plt.show()
 
-for i in range(count_phi):
-    phi_values.append(get_phi_k_value(i + 1))
-
-
-
 #-----------------main-----------
 
+for i in range(count_phi):
+    phi_values.append(get_phi_k_value(i + 1))
 
 #------------------First compare-----------
 H = get_matrix_H(N1)#calc matrix H for N1 count
