@@ -326,14 +326,12 @@ method_pristrelki_U = Shooting_method(fun_U, U0=-0.99999, ne=101, e2=15, count_e
 energy_U, psi_U = method_pristrelki_U.get_energy()
 
 #---------write results--------------------
-stroka = " E0 = {:12.5e}"
-print("Using pristrelka method ")
-print(stroka.format(energy_U[0]))
+print("E0 (shooting_method) = {:12.8f}".format(energy_U[0]))
 print()
 print("Using variacionnij method")
-print( stroka.format(E0), "( N = ", N1, ")")
-print( stroka.format(E02), "( N = ", N2, ")")
-print(stroka.format(E03), "( N = ", N3, ")")
+print("E0 (for N = {:d} )      = {:12.8f}".format(N1, E0))
+print("E0 (for N = {:d} )      = {:12.8f}".format(N2, E02))
+print("E0 (for N = {:d} )     = {:12.8f}".format(N3, E03))
 
 
 
