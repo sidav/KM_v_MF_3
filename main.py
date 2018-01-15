@@ -322,13 +322,12 @@ if coef_c[0] < 0:
 psi3 = get_psi(coef_c)
 #--------------end third-------------------
 
-method_pristrelki_U = Shooting_method(fun_U, U0=-0.99999, ne=101, e2=15, count_e=1, n=n)
-energy_U, psi_U = method_pristrelki_U.get_energy()
+shooting_method_U = Shooting_method(fun_U, U0=-0.99999, ne=101, e2=15, count_e=1, n=n)
+energy_U, psi_U = shooting_method_U.get_energy()
 
 #---------write results--------------------
 print("E0 (shooting_method) = {:12.8f}".format(energy_U[0]))
-print()
-print("Using variacionnij method")
+print("Using variational method: ")
 print("E0 (for N = {:d} )      = {:12.8f}".format(N1, E0))
 print("E0 (for N = {:d} )      = {:12.8f}".format(N2, E02))
 print("E0 (for N = {:d} )     = {:12.8f}".format(N3, E03))
