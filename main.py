@@ -322,7 +322,7 @@ if coef_c[0] < 0:
 psi3 = get_psi(coef_c)
 #--------------end third-------------------
 
-method_pristrelki_U = Shooting_method(fun_U, U0=-4, ne=101, e2=15, count_e=1, n=n)
+method_pristrelki_U = Shooting_method(fun_U, U0=-0.99999, ne=101, e2=15, count_e=1, n=n)
 energy_U, psi_U = method_pristrelki_U.get_energy()
 
 #---------write results--------------------
