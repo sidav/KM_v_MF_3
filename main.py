@@ -161,7 +161,9 @@ N2 = 8
 N3 = 15
 phi_values = []
 Temp = []
-#--------------------end data initial----------------------------------------
+
+
+#--------------------   Func defs   ----------------------------------------
 
 def fun_U(x): #potential function
     if (abs(x) < L):
@@ -195,18 +197,12 @@ def calcT(funF, X):
         der.append(-1/2 * derivative(funF, x, dx=1.e-6, n=2, order=5))
     return der
 
-def phi_even(k):
-    return lambda x: 1 / math.sqrt(L) * math.sin(math.pi * k * x / (2 * L))
-
-def phi_odd(k):
-    return lambda x: 1 / math.sqrt(L) * math.cos(math.pi * k * x / (2 * L))
-
 #target of functions in point k
 def get_phi_k_value(k):
     if k % 2 == 0:
-        fun = phi_even(k)
+        fun = lambda x: 1 / math.sqrt(L) * math.sin(math.pi * k * x / (2 * L))
     else:
-        fun = phi_odd(k)
+        fun = lambda x: 1 / math.sqrt(L) * math.cos(math.pi * k * x / (2 * L))
 
     result = []
     for x in X:
@@ -283,7 +279,6 @@ if (coef_c[0] < 0):
     coef_c = np.dot(coef_c, -1)
 
 psi1 = get_psi(coef_c)  #calc psi1
-#------------------end first----------------
 
 #--------------Second-------------------
 H = get_matrix_H(N2)
@@ -301,7 +296,6 @@ for i in range(len(c)):
 if coef_c[0] < 0:
     coef_c = np.dot(coef_c, -1)
 psi2 = get_psi(coef_c)
-#--------------end second------------------
 
 
 #-------------third--------------------
@@ -320,7 +314,8 @@ for i in range(len(c)):
 if coef_c[0] < 0:
     coef_c = np.dot(coef_c, -1)
 psi3 = get_psi(coef_c)
-#--------------end third-------------------
+
+
 
 shooting_method_U = Shooting_method(fun_U, U0=-0.99999, ne=101, e2=15, count_e=1, n=n)
 energy_U, psi_U = shooting_method_U.get_energy()
