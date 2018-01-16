@@ -213,9 +213,9 @@ def get_phi_k_value(k):
 #functions
 def get_phi_k(k):
     if k % 2 == 0:
-        return phi_even(k)
+        return lambda x: 1 / math.sqrt(L) * math.sin(math.pi * k * x / (2 * L))
     else:
-        return phi_odd(k)
+        return lambda x: 1 / math.sqrt(L) * math.cos(math.pi * k * x / (2 * L))
 
 def get_matrix_H(N):
     value_U = np.array([fun_U(X[i]) for i in np.arange(n)])
