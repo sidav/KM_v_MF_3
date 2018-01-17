@@ -244,7 +244,8 @@ def get_psi(c):
     return result
 
 def plot(U, psi, psi1, psi2, psi3):
-    plt.axis([A, B, -1, W])
+    offset = 0.2
+    plt.axis([A-offset, B+offset, -1-offset, W-offset])
     plt.plot(X, U, 'g-', linewidth=5.0, label="U(x)")
     Zero = np.zeros(n, dtype=float)
     plt.plot(X, Zero, 'k-', linewidth=1.0)  # abscissa axis
