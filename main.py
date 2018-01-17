@@ -180,8 +180,7 @@ def mean(psi_m, oper_value, psi_n):
         for ind in range(len(psi_m)):
             value.append(psi_m[ind] * oper_value[ind] * psi_n[ind])
 
-    result = simps(value, X)#Integrate y(x) using samples along the given axis and the composite
-                            #Simpson's rule.  If x is None, spacing of dx is assumed.
+    result = simps(value, X)
     return result
 
 def calcT(funF, X):
@@ -211,6 +210,7 @@ def get_phi_k_values(k):
     return result
 
 #functions
+
 def get_phi_k(k):
     if k % 2 == 0:
         return lambda x: 1 / math.sqrt(L) * math.sin(math.pi * k * x / (2 * L))
@@ -227,6 +227,7 @@ def get_matrix_H(N):
                 new_value += math.pow(math.pi * (i + 1) / L, 2) / 8
             new_value += mean(phi_values[i], value_U, phi_values[j])
             matrix[i][j] = new_value
+    # print_beautiful_matrix(matrix)
     return matrix
 
 def get_psi(c):
@@ -258,10 +259,34 @@ def plot(U, psi, psi1, psi2, psi3):
     plt.show()
 
 ###################################
+
+def print_beautiful_matrix(matr): ### <-- DEL ME
+    print("Printing matrix of size {:d}".format(len(matr)))
+    for i in range(len(matr)):
+        for j in range(len(matr[0])):
+            print("{:12.5f}".format(matr[i][j]), end="")
+        print("")
+
+def normaliz_condition(vect):
+    epsylon = 0.0000000000001
+    for i in range(len(vect)):
+        for j in range(len(vect)):
+            curr_dot = np.dot(vect[i], vect[j])
+            if i == j and abs(curr_dot - 1.0) > epsylon:
+                print("ERROR EQ: {:d} product on itself is {:12.20f} ".format(i, curr_dot))
+            elif i != j and abs(curr_dot) > epsylon:
+                print("ERROR NEQ: {:d} and {:d} product is {:12.20f} ".format(i, j, curr_dot))
+
 def comp_psi(curr_N):
     H = get_matrix_H(curr_N)  # calc matrix H for N1 count
 
     e, c = np.linalg.eig(H)
+
+    # print_beautiful_matrix(c)
+    normaliz_condition(c)
+    # print(np.dot(c[0], c[2]))
+    # print("above")
+
     E0 = e.min()
     for i in range(len(e)):
         if e[i] == E0:
