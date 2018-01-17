@@ -198,7 +198,7 @@ def calcT(funF, X):
     return der
 
 #target of functions in point k
-def get_phi_k_value(k):
+def get_phi_k_values(k):
     if k % 2 == 0:
         fun = lambda x: 1 / math.sqrt(L) * math.sin(math.pi * k * x / (2 * L))
     else:
@@ -257,77 +257,46 @@ def plot(U, psi, psi1, psi2, psi3):
     plt.legend(fontsize=16, shadow=True, fancybox=True, loc='upper right')
     plt.show()
 
-#-----------------main-----------
+###################################
+def comp_psi(curr_N):
+    H = get_matrix_H(curr_N)  # calc matrix H for N1 count
+
+    e, c = np.linalg.eig(H)
+    E0 = e.min()
+    for i in range(len(e)):
+        if e[i] == E0:
+            min_ind = i
+            break
+
+    coef_c = []
+    for i in range(len(c)):
+        coef_c.append(c[i][min_ind])
+    if (coef_c[0] < 0):
+        coef_c = np.dot(coef_c, -1)
+
+    curr_psi = get_psi(coef_c)  # calc psi1
+    return E0, curr_psi
+
+####################################
+# -------------  main  ----------- #
 
 for i in range(count_phi):
-    phi_values.append(get_phi_k_value(i + 1))
+    phi_values.append(get_phi_k_values(i + 1))
 
-#------------------First compare-----------
-H = get_matrix_H(N1)#calc matrix H for N1 count
-
-e, c = np.linalg.eig(H)
-E0 = e.min()
-for i in range(len(e)):
-    if e[i] == E0:
-        min_ind = i
-        break
-
-coef_c = []
-for i in range(len(c)):
-    coef_c.append(c[i][min_ind])
-if (coef_c[0] < 0):
-    coef_c = np.dot(coef_c, -1)
-
-psi1 = get_psi(coef_c)  #calc psi1
-
-#--------------Second-------------------
-H = get_matrix_H(N2)
-e, c = np.linalg.eig(H)
-E02 = e.min()
-for i in range(len(e)):
-    if e[i] == E02:
-        min_ind = i
-        break
-
-coef_c = []
-for i in range(len(c)):
-    coef_c.append(c[i][min_ind])
-
-if coef_c[0] < 0:
-    coef_c = np.dot(coef_c, -1)
-psi2 = get_psi(coef_c)
-
-
-#-------------third--------------------
-H = get_matrix_H(N3)
-e, c = np.linalg.eig(H)
-E03 = e.min()
-for i in range(len(e)):
-    if e[i] == E03:
-        min_ind = i
-        break
-
-coef_c = []
-for i in range(len(c)):
-    coef_c.append(c[i][min_ind])
-
-if coef_c[0] < 0:
-    coef_c = np.dot(coef_c, -1)
-psi3 = get_psi(coef_c)
-
-
+E0, psi1 = comp_psi(N1)
+E02, psi2 = comp_psi(N2)
+E03, psi3 = comp_psi(N3)
 
 shooting_method_U = Shooting_method(fun_U, U0=-0.99999, ne=101, e2=15, count_e=1, n=n)
 energy_U, psi_U = shooting_method_U.get_energy()
+SM_energy = energy_U[0]
 
 #---------write results--------------------
-print("E0 (shooting_method) = {:12.8f}".format(energy_U[0]))
+print("E0 (shooting_method) = {:12.8f}".format(SM_energy))
 print("Using variational method: ")
-print("E0 (for N = {:d} )      = {:12.8f}".format(N1, E0))
-print("E0 (for N = {:d} )      = {:12.8f}".format(N2, E02))
-print("E0 (for N = {:d} )     = {:12.8f}".format(N3, E03))
-
-
+print("E0 (for N = {:d} )      = {:12.8f}, diff {:12.10f}".format(N1, E0, E0 - SM_energy))
+print("E0 (for N = {:d} )      = {:12.8f}, diff {:12.10f}".format(N2, E02, E02 - SM_energy))
+print("E0 (for N = {:d} )     = {:12.8f}, diff {:12.10f}".format(N3, E03, E03 - SM_energy))
 
 #----------plot graph----------------------
 value_U = np.array([fun_U(X[i]) for i in np.arange(n)])
